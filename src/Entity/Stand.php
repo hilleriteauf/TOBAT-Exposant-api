@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Stand
  *
  * @ORM\Table(name="stand", indexes={@ORM\Index(name="code_exposant", columns={"code_exposant"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\StandRepository")
  */
 class Stand
 {
