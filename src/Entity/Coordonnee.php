@@ -42,9 +42,23 @@ class Coordonnee
         return $this->x;
     }
 
+    public function setX(int $x) : self
+    {
+        $this->x = $x;
+
+        return $this;
+    }
+
     public function getY(): ?int
     {
         return $this->y;
+    }
+
+    public function setY($y) : self
+    {
+        $this->y = $y;
+
+        return $this;
     }
 
     public function getIdStand(): ?int

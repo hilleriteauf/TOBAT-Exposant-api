@@ -47,4 +47,17 @@ class StandRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getMaxId()
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT MAX(stand.id_stand) as max
+        FROM stand';
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        return intval($stmt->fetch()["max"]);
+    }
 }

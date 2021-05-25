@@ -18,6 +18,7 @@ class Exposant
      * @ORM\Column(name="code_exposant", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\OneToOne(targetEntity="App\Entity\Stand", mappedBy="idStand")
      */
     private $codeExposant;
 

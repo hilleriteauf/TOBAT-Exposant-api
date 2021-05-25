@@ -17,9 +17,9 @@ class Stand
      *
      * @ORM\Column(name="id_stand", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $idStand;
+    //* @ORM\GeneratedValue(strategy="IDENTITY")
 
     /**
      * @var string|null
@@ -30,7 +30,7 @@ class Stand
 
     /**
      * @var int|null
-     *
+     * @ORM\OneToOne(targetEntity="App\Entity\Exposant", inversedBy="exposant")
      * @ORM\Column(name="code_exposant", type="integer", nullable=true)
      */
     private $codeExposant;
@@ -38,6 +38,13 @@ class Stand
     public function getIdStand(): ?int
     {
         return $this->idStand;
+    }
+
+    public function setIdStand($idStand): self
+    {
+        $this->idStand = $idStand;
+
+        return $this;
     }
 
     public function getNom(): ?string
@@ -63,6 +70,4 @@ class Stand
 
         return $this;
     }
-
-
 }
