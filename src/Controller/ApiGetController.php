@@ -51,6 +51,7 @@ class ApiGetController extends AbstractController
             $standsArray[] = [
                 "id_stand" => $stand->getIdStand(),
                 "nom" => $stand->getNom(),
+                "superficie" => count($coordonnees),
                 "exposant" => $exposant,
                 "coordonnees" => $coordonnees
             ];
