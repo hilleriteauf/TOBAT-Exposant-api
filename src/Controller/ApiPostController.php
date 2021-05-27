@@ -100,26 +100,49 @@ class ApiPostController extends AbstractController
         $standName = $postData["nom_stand"];
         $coordonnees = $postData["coordonnees"];
         
+        $regexProblem = false;
         $alreadyExists = false;
         $outOfBounds = false;
 
-        if ($coordonnees["nord"] < 0 || $coordonnees["nord"] > 4) $outOfBounds = true;
-        if ($coordonnees["sud"] < 0 || $coordonnees["sud"] > 4) $outOfBounds = true;
-        if ($coordonnees["est"] < 0 || $coordonnees["est"] > 9) $outOfBounds = true;
-        if ($coordonnees["ouest"] < 0 || $coordonnees["ouest"] > 9) $outOfBounds = true;
+        $regexNom = "/^[\p{L} \d]{1,30}$/u";
+        $regexCoord = "/^[\d]{1,2}$/";
 
-        for ($y=$coordonnees["nord"]; $y <= $coordonnees["sud"] ; $y++) { 
-            for ($x=$coordonnees["ouest"]; $x <= $coordonnees["est"]; $x++) { 
-                if ($coordonneesRepository->findBy(["x" => $x, "y" => $y]) != null)
-                {
-                    $alreadyExists = true;
+        if (!preg_match($regexNom, $standName)) $regexProblem = true;
+        if (!preg_match($regexCoord, $coordonnees["nord"])) $regexProblem = true;
+        if (!preg_match($regexCoord, $coordonnees["sud"])) $regexProblem = true;
+        if (!preg_match($regexCoord, $coordonnees["est"])) $regexProblem = true;
+        if (!preg_match($regexCoord, $coordonnees["ouest"])) $regexProblem = true;
+
+        if (!$regexProblem)
+        {
+
+            if ($coordonnees["nord"] < 0 || $coordonnees["nord"] > 4) $outOfBounds = true;
+            if ($coordonnees["sud"] < 0 || $coordonnees["sud"] > 4) $outOfBounds = true;
+            if ($coordonnees["est"] < 0 || $coordonnees["est"] > 9) $outOfBounds = true;
+            if ($coordonnees["ouest"] < 0 || $coordonnees["ouest"] > 9) $outOfBounds = true;
+    
+            if (!$outOfBounds)
+            {
+                for ($y=$coordonnees["nord"]; $y <= $coordonnees["sud"] ; $y++) { 
+                    for ($x=$coordonnees["ouest"]; $x <= $coordonnees["est"]; $x++) { 
+                        if ($coordonneesRepository->findBy(["x" => $x, "y" => $y]) != null)
+                        {
+                            $alreadyExists = true;
+                        }
+                    }
                 }
             }
+
         }
 
-        if ($alreadyExists || $outOfBounds)
+
+        if ($alreadyExists || $outOfBounds || $regexProblem)
         {
-            $jsonReponse = json_encode(["status" => "fail"]);
+            $errors = array();
+            if ($regexProblem) $errors[] = "bad_syntax";
+            if ($alreadyExists) $errors[] = "coordonnees_already_used";
+            if ($outOfBounds) $errors[] = "coordonnees_out_of_bounds";
+            $jsonReponse = json_encode(["status" => "fail", "errors" => $errors]);
             return new JsonResponse($jsonReponse, 200, [], true);
         }
 
