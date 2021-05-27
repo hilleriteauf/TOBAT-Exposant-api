@@ -101,6 +101,12 @@ class ApiPostController extends AbstractController
         $coordonnees = $postData["coordonnees"];
         
         $alreadyExists = false;
+        $outOfBounds = false;
+
+        if ($coordonnees["nord"] < 0 || $coordonnees["nord"] > 4) $outOfBounds = true;
+        if ($coordonnees["sud"] < 0 || $coordonnees["sud"] > 4) $outOfBounds = true;
+        if ($coordonnees["est"] < 0 || $coordonnees["est"] > 9) $outOfBounds = true;
+        if ($coordonnees["ouest"] < 0 || $coordonnees["ouest"] > 9) $outOfBounds = true;
 
         for ($y=$coordonnees["nord"]; $y <= $coordonnees["sud"] ; $y++) { 
             for ($x=$coordonnees["ouest"]; $x <= $coordonnees["est"]; $x++) { 
@@ -111,7 +117,7 @@ class ApiPostController extends AbstractController
             }
         }
 
-        if ($alreadyExists)
+        if ($alreadyExists || $outOfBounds)
         {
             $jsonReponse = json_encode(["status" => "fail"]);
             return new JsonResponse($jsonReponse, 200, [], true);
